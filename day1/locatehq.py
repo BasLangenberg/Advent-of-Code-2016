@@ -2,6 +2,8 @@ class location():
 
     earthy_directions = ['north', 'east', 'south', 'west']
 
+    past_positions = []
+
     def __repr__(self):
         return 'Locate the headquarters of the easter bunny'
 
@@ -21,16 +23,22 @@ class location():
             raise Exception
 
     def manipulate_coordinates(self, num_moves):
-        if self.cur_direction in ('north' , 'south'):
-            if self.cur_direction == 'north':
-                self.y_axes += num_moves
+        for i in range(num_moves):
+            if self.cur_direction in ('north' , 'south'):
+                if self.cur_direction == 'north':
+                    self.y_axes += 1
+                else:
+                    self.y_axes -= 1
             else:
-                self.y_axes -= num_moves
-        else:
-            if self.cur_direction == 'west':
-                self.x_axes -= num_moves
-            else:
-                self.x_axes += num_moves
+                if self.cur_direction == 'west':
+                    self.x_axes -= 1
+                else:
+                    self.x_axes += 1
+
+            self.save_position()
+
+    def save_position(self):
+        self.past_positions.append(str(str(x.x_axes) + ',' + str(x.y_axes)))
 
     def move(self, instruction):
         self.set_direction(instruction[0])
@@ -39,7 +47,6 @@ class location():
 if __name__ == '__main__':
     x = location()
 
-    visited_locations = []
     input = ['L5', 'R1', 'R4', 'L5', 'L4', 'R3', 'R1', 'L1', 'R4', 'R5', 'L1', 'L3', 'R4', 'L2', 'L4', 'R2', 'L4', 'L1',
              'R3', 'R1', 'R1', 'L1', 'R1', 'L5', 'R5', 'R2', 'L5', 'R2', 'R1', 'L2', 'L4', 'L4', 'R191', 'R2', 'R5',
              'R1', 'L1', 'L2', 'R5', 'L2', 'L3', 'R4', 'L1', 'L1', 'R1', 'R50', 'L1', 'R1', 'R76', 'R5', 'R4', 'R2',
@@ -51,19 +58,21 @@ if __name__ == '__main__':
              'L1', 'L3', 'R1', 'R5', 'L2', 'L4', 'L5', 'L1', 'L1', 'L2', 'R5', 'R5', 'L4', 'R3', 'L2', 'L1', 'L3', 'L4',
              'L5', 'L5', 'L2', 'R4', 'R3', 'L5', 'R4', 'R2', 'R1', 'L5']
 
-    count = 0
-
     for i in input:
         x.move(i)
-        if str(str(x.y_axes) + ',' + str(x.x_axes)) in visited_locations:
-            count += 1
-            print('Found same location for ' + str(count) + ' time: ' + str(str(x.y_axes) + ',' + str(x.x_axes)))
-            print('Moves: ' + str(x.y_axes + x.x_axes))
+        #print(str(x.y_axes) + ',' + str(x.x_axes))
 
-        visited_locations.append(str(str(x.x_axes) + ',' + str(x.y_axes)))
-        print(str(x.y_axes) + ',' + str(x.x_axes))
+    print('Final Answer Q1: ' + str(x.y_axes) + ',' + str(x.x_axes))
+    print('Moves to the location: ' + str(x.y_axes + x.x_axes))
 
-    print('Final Answer: ' + str(x.y_axes) + ',' + str(x.x_axes))
-    print('Moves: ' + str(x.y_axes + x.x_axes))
+    print('')
 
-    print('Answer Q2')
+    print('Final answer Q2:')
+    found = False
+    while found == False:
+        for i in x.past_positions:
+            if x.past_positions.count(i) > 1:
+                print('visited ' + i + ' twice as the first coordinates!')
+                found = True
+            if found == True:
+                break
